@@ -3,11 +3,18 @@
     <h1>{{ msg }}</h1>
     <h2>ETeest Links</h2>
     <getbutton></getbutton>
+    <hr/>
+    <neworder></neworder>
+    <hr/>
+    <createorder></createorder>
   </div>
 </template>
 
 <script>
 import getbutton from './getbutton'
+import neworder from './neworder'
+import createorder from './createorder'
+
 export default {
   name: 'hi',
   data () {
@@ -16,7 +23,9 @@ export default {
     }
   },
   components: {
-    getbutton
+    getbutton,
+    neworder,
+    createorder
   }
 }
 </script>

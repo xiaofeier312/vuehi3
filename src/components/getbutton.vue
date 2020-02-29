@@ -1,5 +1,6 @@
 <template>
   <div class="getbutton">
+    <span>{{ string }}</span><br/>
     <el-button v-on:click="changedisplay">Change display</el-button>
     <div v-if="isdisplay">
       <el-button v-on:click="clickmethod" >click {{ buttonInfo }} times</el-button>
@@ -12,6 +13,7 @@ export default {
   name: 'getbutton',
   data () {
     return {
+      string: 'nihao',
       isdisplay: true,
       buttonInfo: 0
     }

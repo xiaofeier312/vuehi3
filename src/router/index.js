@@ -5,6 +5,7 @@ import Hi from '@/components/Hi'
 import getbutton from '@/components/getbutton'
 import getimage from '@/components/getimage'
 import getlinks from '@/components/getlinks'
+import inputprice from '@/components/inputprice'
 
 Vue.use(Router)
 
@@ -17,7 +18,7 @@ export default new Router({
       component: HelloWorld
     },
     {
-      path: '/hi1',
+      path: '/hi',
       name: 'Hi',
       component: Hi
     },
@@ -35,6 +36,11 @@ export default new Router({
       path: '/getlinks',
       name: 'getlinks',
       component: getlinks
+    },
+    {
+      path: '/inputprice',
+      name: 'inputprice',
+      component: inputprice
     }
   ]
 })

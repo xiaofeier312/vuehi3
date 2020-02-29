@@ -14,11 +14,23 @@ export default {
   data () {
     return {
       urls: [
-        {url: '/hi1'},
+        {url: '/hi'},
         {url: '/getbutton'},
-        {url: '/getimage'}
+        {url: '/getimage'},
+        {url: '/inputprice'}
       ]
     }
   }
 }
 </script>
+
+<style>
+#getlinks {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: left;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
