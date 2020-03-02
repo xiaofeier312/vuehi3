@@ -98,7 +98,7 @@ export default {
   name: 'createorder',
   data () {
     return {
-      url: '/test/createorder',
+      url: '/tool/createordertool',
       isMallChoose: true, // 是否选中商城下单
       orderobject: {
         mobile: null,

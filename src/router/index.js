@@ -14,8 +14,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'getlinks',
+      component: getlinks
     },
     {
       path: '/hi',
