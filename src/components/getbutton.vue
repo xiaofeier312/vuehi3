@@ -1,10 +1,15 @@
 <template>
   <div class="getbutton">
+    <hr/>
     <span>{{ string }}</span><br/>
     <el-button v-on:click="changedisplay">Change display</el-button>
+    <div :msg02='msg2'>
+      {{ msg02 }} ----- {{ msg01 }}
+    </div>
     <div v-if="isdisplay">
       <el-button v-on:click="clickmethod" >click {{ buttonInfo }} times</el-button>
     </div>
+    <hr/>
   </div>
 </template>
 
@@ -25,7 +30,8 @@ export default {
     changedisplay: function () {
       this.isdisplay = !this.isdisplay
     }
-  }
+  },
+  props: ['msg01', 'msg02']
 }
 
 </script>

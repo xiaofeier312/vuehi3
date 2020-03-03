@@ -4,6 +4,8 @@
     <h2>ETeest Links</h2>
     <getbutton></getbutton>
     <hr/>
+        <getbutton></getbutton>
+    <hr/>
     <neworder></neworder>
     <hr/>
     <createorder></createorder>
