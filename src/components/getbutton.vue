@@ -3,8 +3,8 @@
     <hr/>
     <span>{{ string }}</span><br/>
     <el-button v-on:click="changedisplay">Change display</el-button>
-    <div :msg02='msg2'>
-      {{ msg02 }} ----- {{ msg01 }}
+    <div >
+      {{ msg02 }} ----- {{ sonmsg }}
     </div>
     <div v-if="isdisplay">
       <el-button v-on:click="clickmethod" >click {{ buttonInfo }} times</el-button>
@@ -31,7 +31,7 @@ export default {
       this.isdisplay = !this.isdisplay
     }
   },
-  props: ['msg01', 'msg02']
+  props: ['sonmsg']
 }
 
 </script>

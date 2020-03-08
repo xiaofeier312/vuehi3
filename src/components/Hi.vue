@@ -4,7 +4,7 @@
     <h2>ETeest Links</h2>
     <getbutton></getbutton>
     <hr/>
-        <getbutton></getbutton>
+        <getbutton v-bind:sonmsg="msg01"></getbutton>
     <hr/>
     <neworder></neworder>
     <hr/>
@@ -21,7 +21,8 @@ export default {
   name: 'hi',
   data () {
     return {
-      msg: 'Tsts App'
+      msg: 'Tsts App',
+      msg01: 'this msg01!'
     }
   },
   components: {
