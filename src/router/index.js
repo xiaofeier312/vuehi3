@@ -1,46 +1,41 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import Hi from '@/components/Hi'
-import getbutton from '@/components/getbutton'
-import getimage from '@/components/getimage'
-import getlinks from '@/components/getlinks'
-import inputprice from '@/components/inputprice'
+import login from '@/components/login'
+import home from '@/components/home'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
-      path: '/',
-      name: 'getlinks',
-      component: getlinks
+      path: '/login',
+      name: 'login',
+      component: login
     },
     {
-      path: '/hi',
-      name: 'Hi',
-      component: Hi
+      path: '/loginout',
+      redirect: '/login'
     },
     {
-      path: '/getbutton',
-      name: 'getbutton',
-      component: getbutton
-    },
-    {
-      path: '/getimage',
-      name: 'getimage',
-      component: getimage
-    },
-    {
-      path: '/getlinks',
-      name: 'getlinks',
-      component: getlinks
-    },
-    {
-      path: '/inputprice',
-      name: 'inputprice',
-      component: inputprice
+      path: '/home',
+      name: 'home',
+      component: home
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login/') {
+    console.log('-- find path is /login/')
+    return next()
+  }
+  let myToken = window.sessionStorage.getItem('token')
+  if (!myToken) {
+    console.log('-- token is null')
+    return next('/login/')
+  }
+  next()
+})
+
+export default router
