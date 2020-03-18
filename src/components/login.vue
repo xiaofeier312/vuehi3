@@ -101,6 +101,7 @@ export default {
   .login_container{
     background-color: #2b4b6b;
     height: 100%;
+    margin: 0px;
   }
   .login_box{
     width: 450px;
