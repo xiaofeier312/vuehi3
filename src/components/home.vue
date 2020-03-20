@@ -19,21 +19,20 @@
             background-color="#333744"
             class="el-menu-vertical-demo"
           >
-            <el-submenu index="1">
+            <el-submenu
+            v-for="item in homeMenuList"
+            :key="item.id"
+            :index="item.id+''">
               <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>导航一</span>
+                <i class="el-icon-s-goods"></i>
+                <span>  {{ item.name }} </span>
               </template>
-              <el-menu-item index="1-4-1">
+              <el-menu-item v-for="subItem in item.children"
+              :key="subItem.id"
+              :index="subItem.id+''">
                 <template slot="title">
                   <i class="el-icon-location"></i>
-                  <span>导航1.1</span>
-                </template>
-              </el-menu-item>
-              <el-menu-item index="1-4-2">
-                <template slot="title">
-                  <i class="el-icon-setting"></i>
-                  <span>导航1.2</span>
+                  <span>{{ subItem.name }}</span>
                 </template>
               </el-menu-item>
             </el-submenu>
@@ -50,16 +49,18 @@
 </template>
 
 <script>
-import { getMenuList } from '../api/login'
+import { getMenuListUtil } from '../api/login'
 export default {
   name: 'home',
   data() {
     return {
-      homeMenuList: ''
+      homeMenuList: []
     }
   },
-  created() {
-    this.homeMenuList = this.getMenuList()
+  async created() {
+    this.homeMenuList = await this.getMenuList()
+    console.log('--create():')
+    console.log(this.homeMenuList)
   },
 
   methods: {
@@ -67,8 +68,16 @@ export default {
       window.sessionStorage.clear()
       this.$router.push('/login/')
     },
-    getMenuList() {
-      return getMenuList()
+    async getMenuList() {
+      const menuRs = await getMenuListUtil()
+      const {data: res} = menuRs
+      console.log('----getMenuList() res:')
+      console.log(res.menu_list)
+      // if (res.rs !== true) {
+      //   console.log('--get res fail')
+      //   return this.$message.error(res)
+      // }
+      return res.menu_list
     }
   }
 }
