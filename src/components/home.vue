@@ -15,21 +15,26 @@
         <el-aside width="200px">
           <el-menu
             text-color="#fff"
-            default-active="1"
             background-color="#333744"
             class="el-menu-vertical-demo"
+            :unique-opened="true"
+            :router="true"
+            default-active="currentActive"
           >
             <el-submenu
             v-for="item in homeMenuList"
             :key="item.id"
-            :index="item.id+''">
+            :index="item.id+''"
+            >
               <template slot="title">
                 <i class="el-icon-s-goods"></i>
                 <span>  {{ item.name }} </span>
               </template>
               <el-menu-item v-for="subItem in item.children"
               :key="subItem.id"
-              :index="subItem.id+''">
+              :index="'/'+subItem.path"
+              @click="clickElMenuItem('/'+subItem.path)"
+              >
                 <template slot="title">
                   <i class="el-icon-location"></i>
                   <span>{{ subItem.name }}</span>
@@ -40,7 +45,11 @@
         </el-aside>
 
         <el-container>
-          <el-main>Main</el-main>
+          <el-main>
+            <!-- <router-view class="welcome">
+            </router-view> -->
+            <router-view></router-view>
+          </el-main>
           <el-footer>Copyright 2021.</el-footer>
         </el-container>
       </el-container>
@@ -50,11 +59,13 @@
 
 <script>
 import { getMenuListUtil } from '../api/login'
+
 export default {
   name: 'home',
   data() {
     return {
-      homeMenuList: []
+      homeMenuList: [],
+      currentActive: window.sessionStorage.getItem('currentActive')
     }
   },
   async created() {
@@ -78,6 +89,10 @@ export default {
       //   return this.$message.error(res)
       // }
       return res.menu_list
+    },
+    clickElMenuItem(menuLink) {
+      // 保存当前激活的menu
+      window.sessionStorage.setItem('currentActive', menuLink)
     }
   }
 }
