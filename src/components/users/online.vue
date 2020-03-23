@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       queryInfo: {
-        query: '',
+        query: '1',
         pagenum: 1,
         pagesize: 10
       }
