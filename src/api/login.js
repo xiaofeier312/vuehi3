@@ -1,5 +1,7 @@
 import axios from 'axios'
-import { config } from 'shelljs'
+import {
+  config
+} from 'shelljs'
 
 const baseUrl = 'http://127.0.0.1:8001'
 
@@ -21,5 +23,11 @@ export const getOrderById = params => {
 export const getMenuListUtil = () => {
   const rs = axios.post('/api/getmenulist/').then(res => res)
   console.log('--this is export const getMenulist')
+  return rs
+}
+
+export const getUserList = (params) => {
+  const rs = axios.post('/api/getuserlist/', params).then(res => res)
+  console.log('-- this is export const getuserlist')
   return rs
 }

@@ -10,9 +10,9 @@
 
     <el-card class="box-card">
       <!-- <div style="margin-top: 15px;"> -->
-        <el-row :gutter="20">
-          <el-col :span="8">
-            <el-input placeholder="请输入内容" v-model="input3">
+        <el-row :gutter="10">
+          <el-col :span="16">
+            <el-input placeholder="请输入内容" v-model="queryInfo.query">
               <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </el-col>
@@ -28,8 +28,30 @@
 </template>
 
 <script>
+import { getUserList } from '../../api/login'
+
 export default {
-  name: 'online'
+  name: 'online',
+  data() {
+    return {
+      queryInfo: {
+        query: '',
+        pagenum: 1,
+        pagesize: 10
+      }
+    }
+  },
+  created() {
+    this.getUserList(this.queryInfo)
+  },
+  methods: {
+    getUserList() {
+      const userList = getUserList(this.queryInfo)
+      console.log('-- userlist')
+      console.log(userList)
+      return userList
+    }
+  }
 }
 </script>
 
