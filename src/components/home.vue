@@ -110,11 +110,11 @@ export default {
   display: flex;
   justify-content: space-between;
   padding-left: 15px;
-  align-items: center;
+  align-items: flex-start;
   font-size: 20px;
   > div {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     span {
       margin-left: 15px;
       color: #b3c0d1;
@@ -128,21 +128,21 @@ export default {
 .el-footer {
   background-color: #b3c0d1;
   color: #333;
-  text-align: center;
+  text-align: flex-start;
   line-height: 60px;
 }
 
 .el-aside {
   background-color: #213744;
-  text-align: center;
-  line-height: 200px;
+  text-align: flex-start;
+  line-height: 100px;
 }
 
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  text-align: center;
-  line-height: 160px;
+  text-align: flex-start;
+  // line-height:10px;
 }
 
 body > .el-container {
@@ -150,12 +150,12 @@ body > .el-container {
   color: #fff;
 }
 
-.el-container:nth-child(5) .el-aside,
-.el-container:nth-child(6) .el-aside {
-  line-height: 260px;
-}
+// .el-container:nth-child(5) .el-aside,
+// .el-container:nth-child(6) .el-aside {
+//   line-height: 260px;
+// }
 
-.el-container:nth-child(7) .el-aside {
-  line-height: 320px;
-}
+// .el-container:nth-child(7) .el-aside {
+//   line-height: 320px;
+// }
 </style>
