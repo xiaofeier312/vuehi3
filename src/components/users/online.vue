@@ -9,17 +9,16 @@
     </el-breadcrumb>
 
     <el-card class="box-card">
-      <!-- <div style="margin-top: 15px;"> -->
       <el-row :gutter="20">
-        <el-col :span="12">
-          <el-input placeholder="请输入内容" v-model="queryInfo.query">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-col :span="6">
+          <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable>
+            <el-button slot="append" icon="el-icon-search" v-on:click="getUserList"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
           <div class="grid-content bg-purple"></div>
         </el-col>
-        <el-button type="primary">添加用户</el-button>
+        <el-button type="primary" v-on:click="dialogVisible = true">添加用户</el-button>
 
         <div>
           <el-table :data="pageUserList" stripe style="width: 100%;" border>
@@ -37,42 +36,106 @@
                 ></el-switch>
               </template>
             </el-table-column>
-            <el-table-column prop="mg_id" label="操作"  width="200">
+            <el-table-column prop="mg_id" label="操作" width="200">
               <template slot-scope="scope">
-                <el-tooltip  effect="dark" content="编辑" placement="top-start" :enterable="false">
+                <el-tooltip effect="dark" content="编辑" placement="top-start" :enterable="false">
                   <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
                 </el-tooltip>
 
-                <el-tooltip  effect="dark" content="删除" placement="top-start" :enterable="false">
+                <el-tooltip effect="dark" content="删除" placement="top-start" :enterable="false">
                   <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
                 </el-tooltip>
 
-                <el-tooltip  effect="dark" content="权限" placement="top-start" :enterable="false">
+                <el-tooltip effect="dark" content="权限" placement="top-start" :enterable="false">
                   <el-button type="info" icon="el-icon-message" size="mini"></el-button>
                 </el-tooltip>
               </template>
             </el-table-column>
           </el-table>
         </div>
+
+        <div class="paginationblock">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="queryInfo.pagenum"
+            :page-sizes="[2, 10, 20]"
+            :page-size="queryInfo.pagesize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          ></el-pagination>
+        </div>
       </el-row>
-      <!-- </div> -->
     </el-card>
+
+    <el-dialog
+      title="新建用户"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+      @close="closeAddDialogForm"
+    >
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
+        <el-form-item label="用户名" prop="mg_name">
+          <el-input v-model="addForm.mg_name"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" prop="mg_mobile">
+          <el-input v-model="addForm.mg_mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="角色" prop="role_id">
+          <el-input v-model="addForm.role_id"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeAddDialogForm">重置</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
+
 <script>
-import { getUserList } from '../../api/login'
+import { getUserListUtil, addUserUtil } from '../../api/login'
 
 export default {
   name: 'online',
   data() {
+    var checkMobile = (rule, value, cb) => {
+      const valueStr = value.toString()
+      if (valueStr.indexOf('1') === 0) {
+        console.log('--手机开头是1')
+        return cb()
+      }
+      cb(new Error('手机开头并不是1'))
+    }
     return {
       queryInfo: {
-        query: '1',
+        query: '',
         pagenum: 1,
         pagesize: 10
       },
-      pageUserList: []
+      pageUserList: [],
+      total: 0,
+      allPageNums: 0,
+      dialogVisible: false,
+      addForm: {
+        mg_name: '',
+        mg_mobile: '',
+        role_id: '',
+        mg_state: 1
+      },
+      addFormRules: {
+        mg_name: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 10, message: '长度3~10', trigger: 'blur' }
+        ],
+        mg_mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { min: 11, max: 11, message: '长度11', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
@@ -81,14 +144,46 @@ export default {
   computed: {},
   methods: {
     async getUserList() {
-      const userList = await getUserList(this.queryInfo)
+      const userList = await getUserListUtil(this.queryInfo)
       console.log('-- userlist')
       console.log(userList)
-      console.log(userList.data.users)
       this.pageUserList = userList.data.users
       console.log('-- this')
       console.log(this)
+      this.total = userList.data.all_num
+      this.allPageNums = userList.data.page_nums
       return userList
+    },
+    handleSizeChange(newSize) {
+      console.log('--this.queryInfo.pagesize:')
+      this.queryInfo.pagesize = newSize
+      console.log(this.queryInfo.pagesize)
+      this.getUserList()
+    },
+    handleCurrentChange(newPageNum) {
+      this.queryInfo.pagenum = newPageNum
+      this.getUserList()
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
+    closeAddDialogForm() {
+      this.$refs.addFormRef.resetFields()
+    },
+    addUser() {
+      this.$refs.addFormRef.validate(valid => {
+        console.log('信息验证:')
+        console.log(valid)
+        if (valid) {
+          const rs = addUserUtil(this.addForm)
+          console.log(' -- add user result:')
+          console.log(rs.data)
+        }
+      })
     }
   }
 }
@@ -111,9 +206,8 @@ export default {
   padding: 1px;
   height: 1px;
 }
-// .el-col{
-//   padding: 1px;
-//   margin: 5px;
-//   height: 10px;
-// }
+.paginationblock {
+  margin-left: 10%;
+  margin-top: 15px;
+}
 </style>

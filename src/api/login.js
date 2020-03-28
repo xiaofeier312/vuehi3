@@ -26,8 +26,14 @@ export const getMenuListUtil = () => {
   return rs
 }
 
-export const getUserList = (params) => {
+export const getUserListUtil = (params) => {
   const rs = axios.post('/api/getuserlist/', params).then(res => res)
   console.log('-- this is export const getuserlist')
+  return rs
+}
+
+export const addUserUtil = params => {
+  const rs = axios.post('/api/saveuser/', params).then(res => res)
+  console.log('-- this is login.js addUserUtil')
   return rs
 }
