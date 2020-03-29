@@ -52,7 +52,7 @@
                     type="danger"
                     icon="el-icon-delete"
                     size="mini"
-                    @click="showEditDialog()"
+                    @click="deleteUser(scope.row.id)"
                   ></el-button>
                 </el-tooltip>
 
@@ -124,7 +124,7 @@
 
 
 <script>
-import { getUserListUtil, addUserUtil, editUserUtil } from '../../api/login'
+import { getUserListUtil, addUserUtil, editUserUtil, deleteUserUtil } from '../../api/login'
 
 export default {
   name: 'online',
@@ -289,6 +289,37 @@ export default {
         }
         this.loading = false
       })
+    },
+    async deleteUser(userId) {
+      const rs = await this.$confirm(
+        '此操作将永久删除该用户, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+        .then(() => {
+          return 'confirm'
+        })
+        .catch(() => {
+          return 'cancel'
+        })
+      console.log(rs)
+      if (rs === 'confirm') {
+        const rsDelete = deleteUserUtil(userId)
+        console.log(rsDelete)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      } else {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      }
     }
   }
 }
