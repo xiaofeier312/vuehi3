@@ -39,11 +39,21 @@
             <el-table-column prop="mg_id" label="操作" width="200">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" content="编辑" placement="top-start" :enterable="false">
-                  <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+                  <el-button
+                    type="primary"
+                    @click="showEditDialog(scope.row)"
+                    icon="el-icon-edit"
+                    size="mini"
+                  ></el-button>
                 </el-tooltip>
 
                 <el-tooltip effect="dark" content="删除" placement="top-start" :enterable="false">
-                  <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+                  <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    size="mini"
+                    @click="showEditDialog()"
+                  ></el-button>
                 </el-tooltip>
 
                 <el-tooltip effect="dark" content="权限" placement="top-start" :enterable="false">
@@ -74,6 +84,7 @@
       width="30%"
       :before-close="handleClose"
       @close="closeAddDialogForm"
+      v-loading="loading"
     >
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
         <el-form-item label="用户名" prop="mg_name">
@@ -91,12 +102,29 @@
         <el-button type="primary" @click="addUser">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="30%" v-loading="loading">
+      <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
+        <el-form-item label="用户名" prop="mg_name">
+          <el-input v-model="editForm.mg_name"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" prop="mg_mobile">
+          <el-input v-model="editForm.mg_mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="角色" prop="role_id">
+          <el-input v-model="editForm.role_id"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addEditUser">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 
 <script>
-import { getUserListUtil, addUserUtil } from '../../api/login'
+import { getUserListUtil, addUserUtil, editUserUtil } from '../../api/login'
 
 export default {
   name: 'online',
@@ -119,7 +147,14 @@ export default {
       total: 0,
       allPageNums: 0,
       dialogVisible: false,
+      editDialogVisible: false,
       addForm: {
+        mg_name: '',
+        mg_mobile: '',
+        role_id: '',
+        mg_state: 1
+      },
+      editForm: {
         mg_name: '',
         mg_mobile: '',
         role_id: '',
@@ -128,14 +163,26 @@ export default {
       addFormRules: {
         mg_name: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度3~10', trigger: 'blur' }
+          { min: 3, max: 11, message: '长度3~11', trigger: 'blur' }
         ],
         mg_mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { min: 11, max: 11, message: '长度11', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' }
         ]
-      }
+      },
+      editFormRules: {
+        mg_name: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 11, message: '长度3~11', trigger: 'blur' }
+        ],
+        mg_mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { min: 11, max: 11, message: '长度11', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'blur' }
+        ]
+      },
+      loading: false
     }
   },
   created() {
@@ -175,14 +222,72 @@ export default {
       this.$refs.addFormRef.resetFields()
     },
     addUser() {
-      this.$refs.addFormRef.validate(valid => {
-        console.log('信息验证:')
+      this.$refs.addFormRef.validate(async valid => {
+        this.loading = true
+        console.log('信息验证2:')
         console.log(valid)
         if (valid) {
-          const rs = addUserUtil(this.addForm)
-          console.log(' -- add user result:')
-          console.log(rs.data)
+          this.loading = true
+          try {
+            const rs = await addUserUtil(this.addForm)
+            console.log(' -- add user result:')
+            console.log(rs)
+            if (rs.status === 200) {
+              this.dialogVisible = false
+              this.$message({
+                message: '创建成功',
+                type: 'success'
+              })
+            } else {
+              this.$message.error(rs)
+            }
+          } catch (err) {
+            console.log(err)
+            this.loading = false
+            this.$message.error('添加失败: ' + err)
+          }
         }
+        this.loading = false
+      })
+    },
+    showEditDialog(scopeRow) {
+      console.log('--showEditDialog')
+      this.editForm.mg_id = scopeRow.mg_id
+      this.editForm.mg_name = scopeRow.mg_name
+      this.editForm.mg_mobile = scopeRow.mg_mobile
+      this.editForm.role_id = scopeRow.role_id
+      this.editForm.mg_state = scopeRow.mg_state
+      this.editDialogVisible = true
+    },
+    addEditUser() {
+      this.$refs.editFormRef.validate(async valid => {
+        this.loading = true
+        console.log('信息验证2:')
+        console.log(valid)
+        if (valid) {
+          this.loading = true
+          try {
+            const rs = await editUserUtil(this.editForm)
+            console.log(' -- add edit user result:')
+            console.log(rs)
+            if (rs.status === 200) {
+              this.editDialogVisible = false
+              this.loading = false
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+            } else {
+              this.loading = false
+              this.$message.error(rs)
+            }
+          } catch (err) {
+            console.log(err)
+            this.loading = false
+            this.$message.error('更新失败: ' + err)
+          }
+        }
+        this.loading = false
       })
     }
   }

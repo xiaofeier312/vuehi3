@@ -37,3 +37,8 @@ export const addUserUtil = params => {
   console.log('-- this is login.js addUserUtil')
   return rs
 }
+export const editUserUtil = params => {
+  const rs = axios.post('/api/edituser/', params).then(res => res)
+  console.log('-- this is login.js editUserUtil')
+  return rs
+}
