@@ -52,7 +52,7 @@
                     type="danger"
                     icon="el-icon-delete"
                     size="mini"
-                    @click="deleteUser(scope.row.id)"
+                    @click="deleteUser(scope.row.mg_id)"
                   ></el-button>
                 </el-tooltip>
 
@@ -308,7 +308,8 @@ export default {
         })
       console.log(rs)
       if (rs === 'confirm') {
-        const rsDelete = deleteUserUtil(userId)
+        const rsDelete = await deleteUserUtil({'mg_id': userId})
+        console.log('--rsDelete:')
         console.log(rsDelete)
         this.$message({
           type: 'success',
